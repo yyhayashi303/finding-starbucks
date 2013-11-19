@@ -5,6 +5,10 @@ class StoresController < ApplicationController
   # GET /stores.json
   def index
     @stores = Store.all
+    respond_to do |format|
+      format.html {}
+      format.json { @stores }
+    end
   end
 
   # GET /stores/1

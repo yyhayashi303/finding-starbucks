@@ -16,11 +16,20 @@ class StoresController < ApplicationController
 
   # GET /stores/scraping
   def scraping
-    url = 'http://www.starbucks.co.jp/store/search/result_store.php?search_type=1&free_word=&pref_code=13&city=&store_type_3=&x=23&y=24&pageID=1'
+    baseUrl = 'http://www.starbucks.co.jp'
+    url = baseUrl + '/store/search/result_store.php?pref_code=13'
     puts '---'
-    doc = Hpricot( open( url ).read )
+    listPage = Hpricot( open( url ).read )
+    (listPage/'tr').each { |tr|
+      #((tr/'td.storeName')/'a:nth(0)').each {
+        
+      #}
+      #puts a.attributes['href']
+        #detailPage = Hpricot( open(baseUrl + a['href']).read )
+        #puts (detailPage/'h1').first.inner_text
+    }
     puts '---'
-    render:json => doc
+    render:json => ''
   end
   # GET /stores/1
   # GET /stores/1.json

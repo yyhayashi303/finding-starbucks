@@ -1,6 +1,9 @@
 class StoresController < ApplicationController
   before_action :set_store, only: [:show, :edit, :update, :destroy]
 
+  require 'hpricot'
+  require 'open-uri'
+
   # GET /stores
   # GET /stores.json
   def index
@@ -11,6 +14,14 @@ class StoresController < ApplicationController
     end
   end
 
+  # GET /stores/scraping
+  def scraping
+    url = 'http://www.starbucks.co.jp/store/search/result_store.php?search_type=1&free_word=&pref_code=13&city=&store_type_3=&x=23&y=24&pageID=1'
+    puts '---'
+    doc = Hpricot( open( url ).read )
+    puts '---'
+    render:json => doc
+  end
   # GET /stores/1
   # GET /stores/1.json
   def show

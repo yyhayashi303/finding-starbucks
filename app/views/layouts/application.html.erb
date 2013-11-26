@@ -3,11 +3,26 @@
 <head>
   <title>FindingStarbucks</title>
   <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false&amp;region=jp" charset="UTF8"></script>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <div class="navbar navbar-default navbar-static-top">
+        <div class="navbar-header">
+            <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+            <a href="/" class="navbar-brand">Finding Starbucks</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">HOME</a></li>
+                <li><a href="/">hoge</a></li>
+                <li><a href="/">hoge</a></li>
+            </ul>
+        </div>
+    </div>
 
 <%= yield %>
 

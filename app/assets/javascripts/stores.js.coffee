@@ -158,10 +158,10 @@ mapMoveEvent = ->
 
 appResize = ->
   jQuery("#maparea").css
-    width: "300px"
-    height: "300px"
+    width: "100%"
+    height: "#{$(window).height() - 200}px"
     "text-align": "center"
-    margin: "0 auto 20px"
+    "margin-top": "-20px"
 
 jQuery(document).ready (->
   #店舗位置

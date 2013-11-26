@@ -1,4 +1,5 @@
 FindingStarbucks::Application.routes.draw do
+  resources :stores
 
   get "stores/scraping"
 

@@ -61,53 +61,18 @@ mapInitialize = (elmId, initOption) ->
   makeShopMakers initOption  unless typeof initOption.markers is "undefined"
   google.maps.event.addListener map, "idle", initOption.idle  unless typeof initOption.idle is "undefined"
 
-mapInitialize4Checkin = (elmId, initOption) ->
-  appResize()
-  initOption.zoom = bounsByMode[travelMode]  if typeof initOption.zoom is "undefined"
-  myOptions =
-    zoom: initOption.zoom
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-    disableDefaultUI: true
-    disableDoubleClickZoom: false
-    # draggable: false
-    navigationControl: false
-    scrollwheel: false
-    navigationControlOptions:
-      style: google.maps.NavigationControlStyle.SMALL
-
-  map = new google.maps.Map(document.getElementById(elmId), myOptions)
-  makeShopMakers initOption  unless typeof initOption.markers is "undefined"
-  google.maps.event.addListener map, "idle", initOption.idle  unless typeof initOption.idle is "undefined"
-
 #店舗マーカ作成
 makeShopMakers = (initOptions) ->
-  # initOptions.icon_center = "/smartphone/sp-common/images/mapicon_user.png"  if typeof initOptions.icon_center is "undefined"
-  # initOptions.icon_shop = "/smartphone/sp-common/images/mapicon_store.png"  if typeof initOptions.icon_shop is "undefined"
   markers = initOptions.markers
-
-  #中心点を決定
-  currentLat = initOptions.currentLat
-  currentLng = initOptions.currentLng
-  if typeof initOptions.icon_center?
-    centerLatLng = new google.maps.LatLng(currentLat, currentLng)
-    new google.maps.Marker(
-      position: centerLatLng
-      map: map
-      icon: new google.maps.MarkerImage(initOptions.icon_center)
-    )
-
   jQuery.each markers, (shopid, shop) ->
-    if existShops[shop.id] < 1 or existShops[shop.id] is `undefined`
-      existShops[shop.id] = 1
-      myLatLng = new google.maps.LatLng(shop.latitude_float, shop.longitude_float)
+    if existShops[shop.url] < 1 or existShops[shop.url] is `undefined`
+      existShops[shop.url] = 1
       marker = new google.maps.Marker(
-        position: myLatLng
+        position: new google.maps.LatLng(shop.lat, shop.lng)
         map: map
-        icon: new google.maps.MarkerImage(initOptions.icon_shop)
         shopid: shopid
         shop: shop
       )
-      # marker.icon = initOptions.icon_shop.replace(".png", "_close.png")  if shop.is_opening isnt "yes" and typeof is_checkin is "undefined"
       map_markers[shopid] = marker
 
 setActiveShop = (activeshopid) ->
@@ -183,10 +148,6 @@ mapMoveEvent = ->
         #描画完了
         makerOption =
           markers: shops
-          currentLat: current_lat
-          currentLng: current_lng
-          # icon_center: "/smartphone/sp-common/images/mapicon_store_active.png"
-          # icon_shop: "/smartphone/sp-common/images/mapicon_store.png"
 
         makeShopMakers makerOption
         jQuery("#loader").hide()

@@ -22,7 +22,6 @@ class StoresController < ApplicationController
     listPage = Hpricot( open( url ).read )
     (listPage/'tr').each { |tr|
       #((tr/'td.storeName')/'a:nth(0)').each {
-        
       #}
       #puts a.attributes['href']
         #detailPage = Hpricot( open(baseUrl + a['href']).read )

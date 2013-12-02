@@ -21,12 +21,16 @@ class StoresController < ApplicationController
     puts '---'
     listPage = Hpricot( open( url ).read )
     (listPage/'tr').each { |tr|
-      #((tr/'td.storeName')/'a:nth(0)').each {
-        
-      #}
-      #puts a.attributes['href']
-        #detailPage = Hpricot( open(baseUrl + a['href']).read )
-        #puts (detailPage/'h1').first.inner_text
+      ((tr/'td.storeName')/'a:nth(0)').each { |a|
+        detailPage = Hpricot( open(baseUrl + a['href']).read )
+        @store = Store.new
+        @store[:name] = (detailPage/'h1').first.inner_text
+        @store[:address] = (detailPage/'td')[0].inner_text
+        locationInfo = (detailPage/'script')[3].inner_html
+        @store[:lat] = BigDecimal::new(locationInfo.scan(/x=([\d\.]+)/)[0][0])
+        @store[:lng] = BigDecimal::new(locationInfo.scan(/y=([\d\.]+)/)[0][0])
+        @store.save
+      }
     }
     puts '---'
     render:json => ''

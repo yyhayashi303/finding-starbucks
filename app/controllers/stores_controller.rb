@@ -16,11 +16,24 @@ class StoresController < ApplicationController
 
   # GET /stores/scraping
   def scraping
-    url = 'http://www.starbucks.co.jp/store/search/result_store.php?search_type=1&free_word=&pref_code=13&city=&store_type_3=&x=23&y=24&pageID=1'
+    baseUrl = 'http://www.starbucks.co.jp'
+    url = baseUrl + '/store/search/result_store.php?pref_code=13'
     puts '---'
-    doc = Hpricot( open( url ).read )
+    listPage = Hpricot( open( url ).read )
+    (listPage/'tr').each { |tr|
+      ((tr/'td.storeName')/'a:nth(0)').each { |a|
+        detailPage = Hpricot( open(baseUrl + a['href']).read )
+        @store = Store.new
+        @store[:name] = (detailPage/'h1').first.inner_text
+        @store[:address] = (detailPage/'td')[0].inner_text
+        locationInfo = (detailPage/'script')[3].inner_html
+        @store[:lat] = BigDecimal::new(locationInfo.scan(/x=([\d\.]+)/)[0][0])
+        @store[:lng] = BigDecimal::new(locationInfo.scan(/y=([\d\.]+)/)[0][0])
+        @store.save
+      }
+    }
     puts '---'
-    render:json => doc
+    render:json => ''
   end
   # GET /stores/1
   # GET /stores/1.json

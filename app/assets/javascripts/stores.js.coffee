@@ -67,8 +67,9 @@ makeShopMakers = (initOptions) ->
   jQuery.each markers, (shopid, shop) ->
     if existShops[shop.url] < 1 or existShops[shop.url] is `undefined`
       existShops[shop.url] = 1
+      lagLng = getWorldGeodetic(shop.lat, shop.lng)
       marker = new google.maps.Marker(
-        position: new google.maps.LatLng(shop.lat, shop.lng)
+        position: new google.maps.LatLng(lagLng.lat, lagLng.lng)
         map: map
         shopid: shopid
         shop: shop
@@ -218,4 +219,14 @@ jQuery(document).ready (->
   #/GPS位置情報取得エラー処理
   jQuery("#loader").hide()
   jQuery("#search_locationerror").show()
+
+getWorldGeodetic = (x, y)->
+  y = y / 3600
+  x = x / 3600
+  resLat = (y - y * 0.00010695 + x * 0.000017464 + 0.0046017)
+  resLng = (x - y * 0.000046038 - x * 0.000083043 + 0.010040)
+  {
+    lat: resLat
+    lng: resLng
+  }
 

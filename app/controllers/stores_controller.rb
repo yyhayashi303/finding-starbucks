@@ -16,22 +16,25 @@ class StoresController < ApplicationController
 
   # GET /stores/scraping
   def scraping
+    maxPage = 27
     baseUrl = 'http://www.starbucks.co.jp'
-    url = baseUrl + '/store/search/result_store.php?pref_code=13'
-    puts '---'
-    listPage = Hpricot( open( url ).read )
-    (listPage/'tr').each { |tr|
-      ((tr/'td.storeName')/'a:nth(0)').each { |a|
-        detailPage = Hpricot( open(baseUrl + a['href']).read )
-        @store = Store.new
-        @store[:name] = (detailPage/'h1').first.inner_text
-        @store[:address] = (detailPage/'td')[0].inner_text
-        locationInfo = (detailPage/'script')[3].inner_html
-        @store[:lat] = BigDecimal::new(locationInfo.scan(/x=([\d\.]+)/)[0][0])
-        @store[:lng] = BigDecimal::new(locationInfo.scan(/y=([\d\.]+)/)[0][0])
-        @store.save
-      }
+    url = baseUrl + '/store/search/result_store.php?pref_code=13&pageID='
+    pageId = 1
+    for pageId in 1..maxPage do
+      listPage = Hpricot( open( url + pageId.to_s ).read )
+      (listPage/'tr').each { |tr|
+        ((tr/'td.storeName')/'a:nth(0)').each { |a|
+          detailPage = Hpricot( open(baseUrl + a['href']).read )
+          @store = Store.new
+          @store[:name] = (detailPage/'h1').first.inner_text
+          @store[:address] = (detailPage/'td')[0].inner_text
+          locationInfo = (detailPage/'script')[3].inner_html
+          @store[:lat] = BigDecimal::new(locationInfo.scan(/x=([\d\.]+)/)[0][0])
+          @store[:lng] = BigDecimal::new(locationInfo.scan(/y=([\d\.]+)/)[0][0])
+          @store.save
+        }
     }
+    end
     puts '---'
     render:json => ''
   end

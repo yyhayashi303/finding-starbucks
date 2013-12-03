@@ -1,8 +1,6 @@
 FindingStarbucks::Application.routes.draw do
+  get "stores/scraping", to: "stores#scraping"
   resources :stores
-
-  get "stores/scraping"
-
   root 'stores#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

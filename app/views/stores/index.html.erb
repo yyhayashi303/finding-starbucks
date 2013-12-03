@@ -20,14 +20,8 @@
         <td><%= store.address %></td>
         <td><%= store.lng %></td>
         <td><%= store.lat %></td>
-        <td><%= link_to 'Show', store %></td>
-        <td><%= link_to 'Edit', edit_store_path(store) %></td>
-        <td><%= link_to 'Destroy', store, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Store', new_store_path %>

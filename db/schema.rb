@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131203124147) do
+ActiveRecord::Schema.define(version: 20131208070120) do
 
   create_table "stores", force: true do |t|
     t.string   "name"
@@ -20,9 +20,9 @@ ActiveRecord::Schema.define(version: 20131203124147) do
     t.decimal  "lat"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sotreId"
+    t.integer  "store_id"
   end
 
-  add_index "stores", ["sotreId"], name: "index_stores_on_sotreId"
+  add_index "stores", ["store_id"], name: "index_stores_on_store_id"
 
 end

@@ -24,18 +24,13 @@ class StoresController < ApplicationController
       listPage = Hpricot( open( url + pageId.to_s ).read )
       (listPage/'tr').each { |tr|
         ((tr/'td.storeName')/'a:nth(0)').each { |a|
-          detailPage = Hpricot( open(baseUrl + a['href']).read )
-          @store = Store.new
-          @store[:name] = (detailPage/'h1').first.inner_text
-          @store[:address] = (detailPage/'td')[0].inner_text
-          locationInfo = (detailPage/'script')[3].inner_html
-          @store[:lat] = BigDecimal::new(locationInfo.scan(/x=([\d\.]+)/)[0][0])
-          @store[:lng] = BigDecimal::new(locationInfo.scan(/y=([\d\.]+)/)[0][0])
-          @store.save
+          @store = getStoreInfo(baseUrl + a['href'])
+          if @store != nil
+            @store.save
+          end
         }
     }
     end
-    puts '---'
     render:json => ''
   end
   # GET /stores/1
@@ -93,6 +88,25 @@ class StoresController < ApplicationController
   end
 
   private
+    # 詳細ページからsoter情報を取得して返します.
+    def getStoreInfo(detailPageUrl)
+      /id=(\d)+/ =~ detailPageUrl
+      storeId = $&.delete('id=').to_i
+      @store = Store.where(store_id: storeId)
+      if @store.exists?
+        p 'store[' + storeId.to_s + '] is exists'
+        return
+      end
+      detailPage = Hpricot(open(detailPageUrl))
+      @store = Store.new
+      @store[:store_id] = storeId
+      @store[:name] = (detailPage/'h1').first.inner_text
+      @store[:address] = (detailPage/'td')[0].inner_text
+      locationInfo = (detailPage/'script')[3].inner_html
+      @store[:lat] = BigDecimal::new(locationInfo.scan(/x=([\d\.]+)/)[0][0])
+      @store[:lng] = BigDecimal::new(locationInfo.scan(/y=([\d\.]+)/)[0][0])
+      return @store
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_store
       @store = Store.find(params[:id])
